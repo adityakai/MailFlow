@@ -230,15 +230,15 @@
 
     <div class="login-features">
       <div class="login-feature">
-        <div class="feat-icon">🤖</div>
+        <div class="feat-icon"> 1 </div>
         AI auto-replies with per-thread toggle
       </div>
       <div class="login-feature">
-        <div class="feat-icon">👤</div>
+        <div class="feat-icon"> 2 </div>
         Human takeover with session isolation
       </div>
       <div class="login-feature">
-        <div class="feat-icon">📤</div>
+        <div class="feat-icon"> 3 </div>
         Bulk send to 100+ recipients at once
       </div>
     </div>
@@ -248,7 +248,7 @@
       Connect Your Gmail account
     </a>
 
-    <p class="login-note">🔒 OAuth only — your credentials never leave your server.</p>
+    <p class="login-note">OAuth only — your credentials never leave your server.</p>
 
     <div class="login-footer">
       <a href="https://mailflow-8zw1.onrender.com/privacy.html" target="_blank">Privacy Policy</a>
@@ -313,7 +313,7 @@
       </div>
       <div id="thread-list"></div>
       <div id="thread-empty" class="empty-state hidden">
-        <div class="empty-icon">📭</div>
+        <div class="empty-icon"> ? </div>
         <div>No threads yet</div>
         <button class="btn btn-primary" style="margin-top:12px" onclick="App.newThread()">Start outreach</button>
         <button class="btn btn-ghost" style="margin-top:8px" onclick="App.openBulkSend()">Bulk send</button>
@@ -362,22 +362,22 @@
 <div class="modal-overlay hidden" id="bulk-send-modal" onclick="App.closeModal('bulk-send-modal')">
   <div class="modal modal-wide" onclick="event.stopPropagation()">
     <div class="modal-header">
-      <div class="modal-title">📤 Bulk send — up to 100 emails</div>
+      <div class="modal-title">Bulk send — up to 100 emails</div>
       <button class="modal-close" onclick="App.closeModal('bulk-send-modal')">×</button>
     </div>
     <div class="modal-body">
       <div class="bulk-tip">
          Supports <strong>{{name}}</strong> and <strong>{{company}}</strong> placeholders in subject and message.
-        Each email gets its own thread — AI will handle replies automatically.
+        Each email gets its own thread - AI will handle replies automatically, You Can Takeover Anytime.
       </div>
-      <label class="field-label">Contacts — one per line, or CSV: email, name, company</label>
+      <label class="field-label">Contacts - one per line, or CSV: email, name, company</label>
       <textarea id="bulk-contacts" class="modal-textarea" style="min-height:120px;font-family:var(--font-mono);font-size:12px"
         placeholder="john@acme.com, John Smith, Acme Corp&#10;jane@startup.io, Jane Doe, Startup Inc&#10;dev@techco.com"
         oninput="App.previewBulkContacts()"></textarea>
       <div id="bulk-preview" style="margin:8px 0"></div>
       <label class="field-label">Subject</label>
       <input type="text" id="bulk-subject" placeholder="Quick question about {{company}}'s growth"/>
-      <label class="field-label">Message — AI will handle replies from here</label>
+      <label class="field-label">Message - AI will handle replies from here</label>
       <textarea id="bulk-body" class="modal-textarea" style="min-height:130px"
         placeholder="Hi {{name}},&#10;&#10;I came across {{company}} and wanted to reach out…&#10;&#10;Would you have 15 minutes this week?"></textarea>
       <div style="margin-top:10px;font-size:11px;color:var(--muted2)">

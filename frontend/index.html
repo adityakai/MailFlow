@@ -267,13 +267,12 @@
   <header class="topbar">
     <div class="logo">Mail<em>Flow</em></div>
     <div class="topbar-center">
-      <div class="status-pill green">● Gmail connected</div>
-      <div class="status-pill amber">⚡ Warmup active</div>
-      <div class="status-pill">📬 Primary 94%</div>
+      <div class="status-pill green"> Gmail connected </div>
+      <div class="status-pill amber">Warmup active</div>
     </div>
     <div class="topbar-right">
       <span class="agent-name" id="agent-name"></span>
-      <button class="btn btn-ghost btn-sm" onclick="App.openBulkSend()">📤 Bulk send</button>
+      <button class="btn btn-ghost btn-sm" onclick="App.openBulkSend()">Bulk send</button>
       <button class="btn btn-ghost btn-sm" onclick="App.newThread()">+ New thread</button>
       <button class="btn btn-ghost btn-sm" onclick="App.logout()">Sign out</button>
     </div>
@@ -286,13 +285,13 @@
       <nav>
         <div class="nav-group-label">Threads</div>
         <button class="nav-item active" onclick="App.setFilter('all', this)">
-          <span class="ni-icon">📬</span> All <span class="ni-count" id="cnt-all">0</span>
+          <span class="ni-icon"></span> All <span class="ni-count" id="cnt-all">0</span>
         </button>
         <button class="nav-item" onclick="App.setFilter('ai', this)">
-          <span class="ni-icon">🤖</span> AI managed <span class="ni-count" id="cnt-ai">0</span>
+          <span class="ni-icon"></span> AI managed <span class="ni-count" id="cnt-ai">0</span>
         </button>
         <button class="nav-item" onclick="App.setFilter('human', this)">
-          <span class="ni-icon">👤</span> Human active <span class="ni-count" id="cnt-human">0</span>
+          <span class="ni-icon"></span> Human active <span class="ni-count" id="cnt-human">0</span>
         </button>
 
         <div class="nav-group-label" style="margin-top:20px">Deliverability</div>
@@ -317,7 +316,7 @@
         <div class="empty-icon">📭</div>
         <div>No threads yet</div>
         <button class="btn btn-primary" style="margin-top:12px" onclick="App.newThread()">Start outreach</button>
-        <button class="btn btn-ghost" style="margin-top:8px" onclick="App.openBulkSend()">📤 Bulk send</button>
+        <button class="btn btn-ghost" style="margin-top:8px" onclick="App.openBulkSend()">Bulk send</button>
       </div>
     </section>
 
@@ -368,7 +367,7 @@
     </div>
     <div class="modal-body">
       <div class="bulk-tip">
-        💡 Supports <strong>{{name}}</strong> and <strong>{{company}}</strong> placeholders in subject and message.
+         Supports <strong>{{name}}</strong> and <strong>{{company}}</strong> placeholders in subject and message.
         Each email gets its own thread — AI will handle replies automatically.
       </div>
       <label class="field-label">Contacts — one per line, or CSV: email, name, company</label>

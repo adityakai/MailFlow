@@ -23,8 +23,9 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'dev-secret-change-me',
   resave: false,
   saveUninitialized: false,
+  proxy: IS_PRODUCTION,
   cookie: {
-    secure: IS_PRODUCTION,
+    secure: IS_PRODUCTION ? 'auto' : false,
     httpOnly: true,
     maxAge: 7 * 24 * 60 * 60 * 1000,
     sameSite: 'lax',

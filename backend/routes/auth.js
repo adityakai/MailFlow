@@ -90,6 +90,24 @@ router.get('/api/me', (req, res) => {
   res.json({ user: user || null });
 });
 
+router.get('/api/auth-debug', (req, res) => {
+  const userId = req.session?.userId || null;
+  const user = userId
+    ? db.prepare('SELECT id, email, name FROM users WHERE id = ?').get(userId)
+    : null;
+
+  res.json({
+    hasCookieHeader: Boolean(req.headers.cookie),
+    hasSessionUserId: Boolean(userId),
+    userExists: Boolean(user),
+    sessionIdPrefix: req.sessionID ? req.sessionID.slice(0, 8) : null,
+    protocol: req.protocol,
+    secure: req.secure,
+    forwardedProto: req.get('x-forwarded-proto') || null,
+    nodeEnv: process.env.NODE_ENV || null,
+  });
+});
+
 router.post('/api/logout', (req, res) => {
   req.session.destroy(() => {
     res.clearCookie('mailflow.sid');

@@ -94,7 +94,7 @@ SESSION_SECRET=your_session_secret
 ### 5. Run the app
 
 ```bash
-npm start
+npm run dev
 ```
 
 Visit `http://localhost:3000`

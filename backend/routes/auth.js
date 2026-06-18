@@ -9,9 +9,9 @@ const router = express.Router();
 // ─── Build OAuth2 client ──────────────────────────────────────────────────────
 function getOAuth2Client(tokens = null) {
   const client = new google.auth.OAuth2(
-    process.env.GMAIL_CLIENT_ID,
-    process.env.GMAIL_CLIENT_SECRET,
-    process.env.GMAIL_REDIRECT_URI
+    (process.env.GMAIL_CLIENT_ID || '').trim(),
+    (process.env.GMAIL_CLIENT_SECRET || '').trim(),
+    (process.env.GMAIL_REDIRECT_URI || '').trim()
   );
   if (tokens) client.setCredentials(tokens);
   return client;
@@ -144,13 +144,18 @@ router.get('/api/auth-debug', (req, res) => {
 
 router.get('/api/oauth-config-debug', (req, res) => {
   const clientId = process.env.GMAIL_CLIENT_ID || '';
+  const clientSecret = process.env.GMAIL_CLIENT_SECRET || '';
   const redirectUri = process.env.GMAIL_REDIRECT_URI || '';
 
   res.json({
     hasClientId: Boolean(clientId),
     clientIdPrefix: clientId ? clientId.slice(0, 12) : null,
     clientIdSuffix: clientId ? clientId.slice(-24) : null,
+    clientIdHasWhitespace: clientId !== clientId.trim(),
     hasClientSecret: Boolean(process.env.GMAIL_CLIENT_SECRET),
+    clientSecretPrefix: clientSecret ? clientSecret.slice(0, 6) : null,
+    clientSecretSuffix: clientSecret ? clientSecret.slice(-4) : null,
+    clientSecretHasWhitespace: clientSecret !== clientSecret.trim(),
     redirectUri,
     redirectUriHasWhitespace: redirectUri !== redirectUri.trim(),
     nodeEnv: process.env.NODE_ENV || null,

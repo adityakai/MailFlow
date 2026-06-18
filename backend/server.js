@@ -7,25 +7,27 @@ const db = require('./db');
 const { startPoller } = require('./services/poller');
 
 const app = express();
+const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Trust proxy for Railway/Render (needed for secure cookies behind HTTPS)
-if (process.env.NODE_ENV === 'production') {
+if (IS_PRODUCTION) {
   app.set('trust proxy', 1);
 }
 
 app.use(session({
+  name: 'mailflow.sid',
   secret: process.env.SESSION_SECRET || 'dev-secret-change-me',
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: process.env.NODE_ENV === 'production',
+    secure: IS_PRODUCTION,
     httpOnly: true,
     maxAge: 7 * 24 * 60 * 60 * 1000,
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    sameSite: 'lax',
   },
 }));
 

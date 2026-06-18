@@ -62,8 +62,21 @@ router.get('/auth/callback', async (req, res) => {
         .run(userId, profile.email, profile.name, JSON.stringify({ ...tokens, email: profile.email }));
     }
 
-    req.session.userId = userId;
-    res.redirect('/');
+    req.session.regenerate((regenerateErr) => {
+      if (regenerateErr) {
+        console.error('Session regenerate error:', regenerateErr.message);
+        return res.redirect('/?error=session_failed');
+      }
+
+      req.session.userId = userId;
+      req.session.save((saveErr) => {
+        if (saveErr) {
+          console.error('Session save error:', saveErr.message);
+          return res.redirect('/?error=session_failed');
+        }
+        res.redirect('/');
+      });
+    });
   } catch (err) {
     console.error('OAuth error:', err.message);
     res.redirect('/?error=oauth_failed');
@@ -78,8 +91,10 @@ router.get('/api/me', (req, res) => {
 });
 
 router.post('/api/logout', (req, res) => {
-  req.session.destroy();
-  res.json({ ok: true });
+  req.session.destroy(() => {
+    res.clearCookie('mailflow.sid');
+    res.json({ ok: true });
+  });
 });
 
 module.exports = router;

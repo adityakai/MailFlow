@@ -6,6 +6,41 @@ const db = require('../db');
 
 const router = express.Router();
 
+function wait(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function retryGoogleRequest(label, fn) {
+  let lastErr;
+
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      return await fn();
+    } catch (err) {
+      lastErr = err;
+      const code = err.code || err.response?.data?.error;
+      const shouldRetry =
+        code === 'ERR_STREAM_PREMATURE_CLOSE' ||
+        code === 'ECONNRESET' ||
+        code === 'ETIMEDOUT' ||
+        code === 'ENOTFOUND' ||
+        err.response?.status >= 500;
+
+      if (!shouldRetry || attempt === 3) break;
+
+      console.warn(`${label} failed, retrying`, {
+        attempt,
+        message: err.message,
+        code,
+        status: err.response?.status,
+      });
+      await wait(350 * attempt);
+    }
+  }
+
+  throw lastErr;
+}
+
 // ─── Build OAuth2 client ──────────────────────────────────────────────────────
 function getOAuth2Client(tokens = null) {
   const client = new google.auth.OAuth2(
@@ -43,9 +78,10 @@ router.get('/auth/callback', async (req, res) => {
     const client = getOAuth2Client();
     let tokens;
     try {
-      const tokenResponse = await client.getToken(code);
+      const tokenResponse = await retryGoogleRequest('OAuth token exchange', () => client.getToken(code));
       tokens = tokenResponse.tokens;
     } catch (tokenErr) {
+      const googleError = tokenErr.response?.data?.error || 'unknown';
       console.error('OAuth token exchange error:', {
         message: tokenErr.message,
         code: tokenErr.code,
@@ -53,7 +89,7 @@ router.get('/auth/callback', async (req, res) => {
         data: tokenErr.response?.data,
         redirectUri: process.env.GMAIL_REDIRECT_URI,
       });
-      return res.redirect('/?error=oauth_token_exchange_failed');
+      return res.redirect(`/?error=oauth_token_exchange_failed&reason=${encodeURIComponent(googleError)}`);
     }
 
     client.setCredentials(tokens);
@@ -62,7 +98,7 @@ router.get('/auth/callback', async (req, res) => {
     const oauth2 = google.oauth2({ version: 'v2', auth: client });
     let profile;
     try {
-      const profileResponse = await oauth2.userinfo.get();
+      const profileResponse = await retryGoogleRequest('OAuth profile fetch', () => oauth2.userinfo.get());
       profile = profileResponse.data;
     } catch (profileErr) {
       console.error('OAuth profile fetch error:', {

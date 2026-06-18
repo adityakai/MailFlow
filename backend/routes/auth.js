@@ -41,25 +41,59 @@ router.get('/auth/callback', async (req, res) => {
 
   try {
     const client = getOAuth2Client();
-    const { tokens } = await client.getToken(code);
+    let tokens;
+    try {
+      const tokenResponse = await client.getToken(code);
+      tokens = tokenResponse.tokens;
+    } catch (tokenErr) {
+      console.error('OAuth token exchange error:', {
+        message: tokenErr.message,
+        code: tokenErr.code,
+        status: tokenErr.response?.status,
+        data: tokenErr.response?.data,
+        redirectUri: process.env.GMAIL_REDIRECT_URI,
+      });
+      return res.redirect('/?error=oauth_token_exchange_failed');
+    }
+
     client.setCredentials(tokens);
 
     // Get user profile
     const oauth2 = google.oauth2({ version: 'v2', auth: client });
-    const { data: profile } = await oauth2.userinfo.get();
+    let profile;
+    try {
+      const profileResponse = await oauth2.userinfo.get();
+      profile = profileResponse.data;
+    } catch (profileErr) {
+      console.error('OAuth profile fetch error:', {
+        message: profileErr.message,
+        code: profileErr.code,
+        status: profileErr.response?.status,
+        data: profileErr.response?.data,
+      });
+      return res.redirect('/?error=oauth_profile_failed');
+    }
 
     // Upsert user
-    const existing = db.prepare('SELECT * FROM users WHERE email = ?').get(profile.email);
     let userId;
+    try {
+      const existing = db.prepare('SELECT * FROM users WHERE email = ?').get(profile.email);
 
-    if (existing) {
-      db.prepare('UPDATE users SET name = ?, gmail_token = ? WHERE id = ?')
-        .run(profile.name, JSON.stringify({ ...tokens, email: profile.email }), existing.id);
-      userId = existing.id;
-    } else {
-      userId = uuid();
-      db.prepare('INSERT INTO users (id, email, name, gmail_token) VALUES (?, ?, ?, ?)')
-        .run(userId, profile.email, profile.name, JSON.stringify({ ...tokens, email: profile.email }));
+      if (existing) {
+        db.prepare('UPDATE users SET name = ?, gmail_token = ? WHERE id = ?')
+          .run(profile.name, JSON.stringify({ ...tokens, email: profile.email }), existing.id);
+        userId = existing.id;
+      } else {
+        userId = uuid();
+        db.prepare('INSERT INTO users (id, email, name, gmail_token) VALUES (?, ?, ?, ?)')
+          .run(userId, profile.email, profile.name, JSON.stringify({ ...tokens, email: profile.email }));
+      }
+    } catch (dbErr) {
+      console.error('OAuth user upsert error:', {
+        message: dbErr.message,
+        code: dbErr.code,
+      });
+      return res.redirect('/?error=oauth_user_save_failed');
     }
 
     req.session.regenerate((regenerateErr) => {
@@ -104,6 +138,21 @@ router.get('/api/auth-debug', (req, res) => {
     protocol: req.protocol,
     secure: req.secure,
     forwardedProto: req.get('x-forwarded-proto') || null,
+    nodeEnv: process.env.NODE_ENV || null,
+  });
+});
+
+router.get('/api/oauth-config-debug', (req, res) => {
+  const clientId = process.env.GMAIL_CLIENT_ID || '';
+  const redirectUri = process.env.GMAIL_REDIRECT_URI || '';
+
+  res.json({
+    hasClientId: Boolean(clientId),
+    clientIdPrefix: clientId ? clientId.slice(0, 12) : null,
+    clientIdSuffix: clientId ? clientId.slice(-24) : null,
+    hasClientSecret: Boolean(process.env.GMAIL_CLIENT_SECRET),
+    redirectUri,
+    redirectUriHasWhitespace: redirectUri !== redirectUri.trim(),
     nodeEnv: process.env.NODE_ENV || null,
   });
 });

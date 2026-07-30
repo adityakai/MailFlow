@@ -136,8 +136,3 @@ railway up
 4. **Take over anytime** — click the toggle to switch to human mode and respond manually
 5. **Bulk send** — use the bulk mail option to reach 100+ clients at once
 
----
-
-## License
-
-MIT — use freely, contribute back.

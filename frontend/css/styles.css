@@ -1,7 +1,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --black: #000;
+  --black: #e1e0cc;
   --ink: #101010;
   --card: #212121;
   --cream: #e1e0cc;
@@ -102,12 +102,12 @@ a { color: inherit; text-decoration: none; }
   max-width: calc(100% - 24px);
   padding: 10px clamp(24px, 5vw, 48px);
   border-radius: 0 0 22px 22px;
-  background: #000;
+  background: #fce9e9;
   white-space: nowrap;
   overflow-x: auto;
 }
 .site-nav a {
-  color: rgba(225,224,204,.8);
+  color: rgba(0, 0, 0, 0.8);
   font-size: clamp(10px, 1.1vw, 14px);
   transition: color .2s ease;
 }

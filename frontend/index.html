@@ -25,7 +25,6 @@
         <div class="noise-overlay" aria-hidden="true"></div>
         <div class="hero-gradient" aria-hidden="true"></div>
 
-
         <div class="hero-content">
           <div class="hero-title-wrap reveal-words" data-text="MailFlow" data-asterisk="true"></div>
           <div class="hero-copy">
@@ -40,6 +39,115 @@
         </div>
       </div>
     </section>
+  </main>
+
+  <main id="app" class="workspace-shell hidden">
+    <canvas id="immersive-canvas" aria-hidden="true"></canvas>
+    <div class="workspace-noise" aria-hidden="true"></div>
+
+    <header class="workspace-topbar">
+      <div class="brand-mark">Mail<em>Flow</em></div>
+      <div class="topbar-pills">
+        <span>Gmail connected</span>
+        <span>Warmup active</span>
+      </div>
+      <div class="topbar-actions">
+        <span id="agent-name"></span>
+        <button class="icon-button" onclick="App.openBulkSend()" title="Bulk send" aria-label="Bulk send">
+          <svg viewBox="0 0 24 24"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7Z"/></svg>
+        </button>
+        <button class="icon-button" onclick="App.newThread()" title="New thread" aria-label="New thread">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <button class="pill-button" onclick="App.logout()">Sign out</button>
+      </div>
+    </header>
+
+    <section class="command-grid">
+      <aside class="control-rail">
+        <p class="rail-label">Threads</p>
+        <button class="rail-item active" onclick="App.setFilter('all', this)">All <span id="cnt-all">0</span></button>
+        <button class="rail-item" onclick="App.setFilter('ai', this)">AI managed <span id="cnt-ai">0</span></button>
+        <button class="rail-item" onclick="App.setFilter('human', this)">Human active <span id="cnt-human">0</span></button>
+        <div class="deliverability">
+          <p>Deliverability</p>
+          <span>SPF valid</span>
+          <span>DKIM signed</span>
+          <span>DMARC set</span>
+          <span>Thread chained</span>
+        </div>
+      </aside>
+
+      <section class="thread-panel">
+        <div class="panel-heading">
+          <div>
+            <p>Inbox field</p>
+            <h1>Conversation command.</h1>
+          </div>
+          <input type="text" class="search-box" placeholder="Search threads" oninput="App.search(this.value)"/>
+        </div>
+        <div id="thread-list" class="thread-list"></div>
+        <div id="thread-empty" class="empty-state hidden">
+          <h2>No threads yet</h2>
+          <p>Start outreach or launch a bulk sequence.</p>
+          <div>
+            <button class="pill-button primary" onclick="App.newThread()">Start outreach</button>
+            <button class="pill-button" onclick="App.openBulkSend()">Bulk send</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="detail-panel">
+        <div class="detail-empty" id="detail-empty">
+          <span>+</span>
+          <p>Select a thread to enter the full chain.</p>
+        </div>
+        <div id="detail-content" class="hidden"></div>
+      </section>
+    </section>
+  </main>
+
+  <div class="modal-overlay hidden" id="new-thread-modal" onclick="App.closeModal('new-thread-modal')">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h2>New outreach thread</h2>
+        <button class="modal-close" onclick="App.closeModal('new-thread-modal')">x</button>
+      </div>
+      <div class="modal-body">
+        <label>Contact email<input type="email" id="nt-email" placeholder="contact@company.com"/></label>
+        <label>Contact name<input type="text" id="nt-name" placeholder="First Last"/></label>
+        <label>Company<input type="text" id="nt-company" placeholder="Acme Corp"/></label>
+        <label>Subject<input type="text" id="nt-subject" placeholder="Partnership opportunity"/></label>
+        <label>Opening message<textarea id="nt-body" placeholder="Hi {{name}}, I wanted to reach out about..."></textarea></label>
+      </div>
+      <div class="modal-footer">
+        <button class="pill-button" onclick="App.closeModal('new-thread-modal')">Cancel</button>
+        <button class="pill-button primary" onclick="App.submitNewThread()">Send and chain</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay hidden" id="bulk-send-modal" onclick="App.closeModal('bulk-send-modal')">
+    <div class="modal modal-wide" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Bulk send</h2>
+        <button class="modal-close" onclick="App.closeModal('bulk-send-modal')">x</button>
+      </div>
+      <div class="modal-body">
+        <p class="bulk-tip">Supports {{name}} and {{company}} placeholders. Each contact gets a private thread.</p>
+        <label>Contacts<textarea id="bulk-contacts" class="mono" placeholder="john@acme.com, John Smith, Acme Corp" oninput="App.previewBulkContacts()"></textarea></label>
+        <div id="bulk-preview" class="bulk-preview"></div>
+        <label>Subject<input type="text" id="bulk-subject" placeholder="Quick question about {{company}}"/></label>
+        <label>Message<textarea id="bulk-body" placeholder="Hi {{name}},"></textarea></label>
+        <div id="bulk-progress" class="bulk-progress hidden"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="pill-button" onclick="App.closeModal('bulk-send-modal')">Cancel</button>
+        <button class="pill-button primary" id="bulk-send-btn" onclick="App.submitBulkSend()">Send to all</button>
+      </div>
+    </div>
+  </div>
+
   <div class="toast" id="toast"></div>
   <script src="/js/app.js"></script>
 </body>

@@ -47,7 +47,7 @@ MailFlow is a full-stack email automation client that lets you manage client con
 | Backend | Go |
 | Email | Gmail API (Google OAuth) |
 | AI | Groq API (swappable) |
-| Deployment | Railway |
+| Deployment | Render |
 
 ---
 
@@ -125,12 +125,13 @@ Tested providers: Groq (Llama 3). Compatible with: OpenAI, Anthropic, Mistral, a
 
 ## Deployment
 
-MailFlow is configured for Railway deployment out of the box via `railway.json` and `Procfile`.
+MailFlow can be deployed on [Render](https://render.com) as a Web Service.
 
-```bash
-railway login
-railway up
-```
+1. Create a new **Web Service** and connect your repo
+2. Set **Build Command** to `go build -o server ./backend`
+3. Set **Start Command** to `./server`
+4. Add your environment variables (`APP_ENV=production`, `GMAIL_CLIENT_ID`, `GMAIL_CLIENT_SECRET`, `GMAIL_REDIRECT_URI`, `GROQ_API_KEY`, `SESSION_SECRET`, `FROM_NAME`) in the Render dashboard
+5. Add your Render callback URL (`https://<your-app>.onrender.com/auth/callback`) to Google Cloud Console authorized redirect URIs
 
 ---
 

@@ -21,7 +21,6 @@ const App = (() => {
     show('app');
     hide('login-screen');
     document.getElementById('agent-name').textContent = user.name || '';
-    startImmersiveCanvas();
     await loadThreads();
 
     refreshTimer = setInterval(async () => {

@@ -16,6 +16,7 @@ type config struct {
 	GmailRedirectURI  string
 	FromName          string
 	GroqAPIKey        string
+	GroqModel         string
 	FrontendDir       string
 	SQLitePath        string
 	IsProduction      bool
@@ -39,6 +40,7 @@ func loadConfig() config {
 		GmailRedirectURI:  firstEnv("GMAIL_REDIRECT_URI", "GOOGLE_REDIRECT_URI"),
 		FromName:          os.Getenv("FROM_NAME"),
 		GroqAPIKey:        os.Getenv("GROQ_API_KEY"),
+		GroqModel:         getEnv("GROQ_MODEL", "openai/gpt-oss-120b"),
 		FrontendDir:       getEnv("FRONTEND_DIR", "frontend"),
 		SQLitePath:        getEnv("SQLITE_PATH", "mailflow.db"),
 		IsProduction:      env == "production",

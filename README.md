@@ -77,6 +77,7 @@ Create a `.env` file in the root:
 
 ```env
 GROQ_API_KEY=your_groq_api_key
+GROQ_MODEL=openai/gpt-oss-120b
 GMAIL_CLIENT_ID=your_google_client_id
 GMAIL_CLIENT_SECRET=your_google_client_secret
 GMAIL_REDIRECT_URI=http://localhost:3000/auth/callback
@@ -130,7 +131,7 @@ MailFlow can be deployed on [Render](https://render.com) as a Web Service.
 1. Create a new **Web Service** and connect your repo
 2. Set **Build Command** to `go build -o server ./backend`
 3. Set **Start Command** to `./server`
-4. Add your environment variables (`APP_ENV=production`, `GMAIL_CLIENT_ID`, `GMAIL_CLIENT_SECRET`, `GMAIL_REDIRECT_URI`, `GROQ_API_KEY`, `SESSION_SECRET`, `FROM_NAME`) in the Render dashboard
+4. Add your environment variables (`APP_ENV=production`, `GMAIL_CLIENT_ID`, `GMAIL_CLIENT_SECRET`, `GMAIL_REDIRECT_URI`, `GROQ_API_KEY`, `GROQ_MODEL`, `SESSION_SECRET`, `FROM_NAME`) in the Render dashboard
 5. Add your Render callback URL (`https://<your-app>.onrender.com/auth/callback`) to Google Cloud Console authorized redirect URIs
 
 ---

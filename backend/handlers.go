@@ -16,6 +16,7 @@ func (a *app) routes() http.Handler {
 	mux.HandleFunc("GET /api/me", a.handleMe)
 	mux.HandleFunc("GET /api/auth-debug", a.handleAuthDebug)
 	mux.HandleFunc("GET /api/oauth-config-debug", a.handleOAuthDebug)
+	mux.HandleFunc("GET /api/ai-config-debug", a.handleAIDebug)
 	mux.HandleFunc("POST /api/logout", a.handleLogout)
 	mux.HandleFunc("GET /api/threads", a.requireAuth(a.handleListThreads))
 	mux.HandleFunc("POST /api/threads", a.requireAuth(a.handleCreateThread))
@@ -165,6 +166,13 @@ func (a *app) handleOAuthDebug(w http.ResponseWriter, r *http.Request) {
 		"activeRedirectUri":         a.oauthRedirectURI(r),
 		"redirectUriHasWhitespace":  a.cfg.GmailRedirectURI != strings.TrimSpace(a.cfg.GmailRedirectURI),
 		"appEnv":                    a.cfg.AppEnv,
+	})
+}
+
+func (a *app) handleAIDebug(w http.ResponseWriter, r *http.Request) {
+	writeJSON(w, http.StatusOK, map[string]any{
+		"hasGroqApiKey": a.cfg.GroqAPIKey != "",
+		"groqModel":     a.cfg.GroqModel,
 	})
 }
 

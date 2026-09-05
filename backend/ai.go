@@ -45,7 +45,7 @@ func (a *app) groqChat(system, userPrompt string, maxTokens int) (string, error)
 		return "", fmt.Errorf("GROQ_API_KEY is not configured")
 	}
 	payload := map[string]any{
-		"model":      "llama-3.3-70b-versatile",
+		"model":      a.cfg.GroqModel,
 		"max_tokens": maxTokens,
 		"messages": []map[string]string{
 			{"role": "system", "content": system},
